@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổng Quan Hệ Thống MyEMS v6.8.0 - Energy Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-green: #10b981;
+            --accent-green-light: #34d399;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-amber: #f59e0b;
+            --border-color: #334155;
+            --border-highlight: #475569;
+            --code-bg: #0f172a;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 24px 16px;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #000;
+        }
+
+        .brand-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--accent-green-light);
+            font-weight: 500;
+        }
+
+        .nav-group-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            margin: 16px 8px 8px 8px;
+            font-weight: 700;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item a:hover, .nav-item a.active {
+            background-color: var(--border-color);
+            color: #fff;
+        }
+
+        .nav-item a.active {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .version-tag {
+            display: inline-block;
+            background: var(--accent-green);
+            color: #042f2e;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-green-light);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Content Sections */
+        section {
+            margin-bottom: 48px;
+            scroll-margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            color: var(--accent-cyan);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Cards & Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--border-highlight);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .badge-purple { background: rgba(139, 92, 246, 0.2); color: #c084fc; }
+        .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
+        /* Data Flow Diagrams */
+        .flow-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: var(--accent-green);
+            font-weight: bold;
+            margin: -6px 0 6px 20px;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--bg-secondary);
+            color: #fff;
+            padding: 14px 16px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Code & Pre */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            margin: 12px 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--accent-green-light);
+        }
+
+        .credentials-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">⚡</div>
+            <div>
+                <div class="brand-title">MyEMS</div>
+                <div class="brand-subtitle">v6.8.0 Overview</div>
+            </div>
+        </div>
+
+        <div class="nav-group-title">Menu Chính</div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="#gioi-thieu" class="active">📌 Giới thiệu MyEMS</a></li>
+            <li class="nav-item"><a href="#kien-truc">🏗️ Kiến trúc Hệ thống</a></li>
+            <li class="nav-item"><a href="#microservices">🧩 Các Thành phần Microservice</a></li>
+            <li class="nav-item"><a href="#databases">🗄️ Kiến trúc 13 Database</a></li>
+            <li class="nav-item"><a href="#luong-du-lieu">🔄 Luồng Dữ liệu (Data Flow)</a></li>
+            <li class="nav-item"><a href="#iot-protocols">🔌 IoT & Giao thức Thu thập</a></li>
+            <li class="nav-item"><a href="#cau-hinh">🔑 Cấu hình Ports & Credentials</a></li>
+            <li class="nav-item"><a href="#trien-khai">🚀 Triển khai & Cài đặt</a></li>
+            <li class="nav-item"><a href="#phien-ban">⚡ Community vs Enterprise</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header Banner -->
+        <div class="header-banner">
+            <span class="version-tag">Mã Nguồn Mở Hàng Đầu</span>
+            <h1>Hệ Thống Quản Lý Năng Lượng MyEMS</h1>
+            <p class="subtitle">Tài liệu kiến trúc tổng quan & phân tích kỹ thuật chi tiết dành cho nhà phát triển và quản trị hệ thống.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">13</div>
+                    <div class="stat-label">Cơ Sở Dữ Liệu Tách Biệt</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">ISO 50001</div>
+                    <div class="stat-label">Tiêu Chuẩn Quản Lý</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1000+</div>
+                    <div class="stat-label">Dự Án Thực Tế</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">CMA</div>
+                    <div class="stat-label">Chứng Nhận Kiểm Định</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: Giới thiệu -->
+        <section id="gioi-thieu">
+            <h2>📌 Giới thiệu Tổng quan về MyEMS</h2>
+            <p><strong>MyEMS</strong> là hệ thống quản lý năng lượng (Energy Management System - EMS) mã nguồn mở tham chiếu tiêu chuẩn quốc tế <strong>ISO 50001</strong> (tương đương chuẩn GB/T 23331-2020 của Trung Quốc). Hệ thống được thiết kế chuyên biệt để thu thập, làm sạch, chuẩn hóa, phân tích và báo cáo dữ liệu năng lượng cũng như phát thải carbon.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🏢 Đối Tượng Áp Dụng</span>
+                        <span class="badge badge-green">Ứng dụng</span>
+                    </div>
+                    <p style="font-size: 0.9rem;">Tòa nhà thương mại, nhà máy sản xuất, trung tâm thương mại, bệnh viện, khu công nghiệp, trung tâm dữ liệu và trung tâm quản lý năng lượng / carbon cấp tập đoàn.</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">💡 Các Loại Năng Lượng</span>
+                        <span class="badge badge-blue">Đa dạng</span>
+                    </div>
+                    <p style="font-size: 0.9rem;">Hỗ trợ thu thập & giám sát Điện năng, Nước, Khí nén / Gas, Năng lượng làm lạnh (Chilled Water), Nhiệt năng, Hơi nước và các dạng năng lượng tái tạo.</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🌿 Quản Lý Carbon & Tái Tạo</span>
+                        <span class="badge badge-purple">Mới</span>
+                    </div>
+                    <p style="font-size: 0.9rem;">Hỗ trợ Điện mặt trời (PV), Lưu trữ năng lượng (ESS), Trạm sạc EV, Lưới điện vi mô (Microgrid), Nhà máy điện ảo (VPP) và Tối ưu hóa bằng AI.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Kiến trúc Hệ thống -->
+        <section id="kien-truc">
+            <h2>🏗️ Kiến trúc Hệ thống MyEMS</h2>
+            <p>MyEMS tuân thủ kiến trúc microservices hiện đại, tách biệt hoàn toàn giữa các tầng <strong>IoT Data Acquisition</strong>, <strong>Data Processing Engine</strong>, <strong>RESTful API</strong>, <strong>Multi-Database Layer</strong> và <strong>Frontend User Interfaces</strong>.</p>
+            
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-header">
+                    <span class="card-title">📐 Các Tầng Trong Kiến Trúc Tổng Thể</span>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <h4 style="color: var(--accent-green-light); margin-bottom: 8px;">1. Edge / IoT Acquisition Layer</h4>
+                        <p style="font-size: 0.85rem;">Các dịch vụ chạy dưới background thu thập dữ liệu chuỗi thời gian từ đồng hồ/cảm biến qua Modbus TCP, BACnet, Siemens S7, MQTT...</p>
+                        
+                        <h4 style="color: var(--accent-blue); margin-bottom: 8px;">2. Data Processing Pipeline</h4>
+                        <p style="font-size: 0.85rem;">Dòng dữ liệu đi qua chuỗi làm sạch (Cleaning) &rarr; chuẩn hóa (Normalization) &rarr; tính toán tổng hợp (Aggregation: chi phí, phát thải carbon, FDD).</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-purple); margin-bottom: 8px;">3. Multi-Database Storage Layer</h4>
+                        <p style="font-size: 0.85rem;">Phân tách 13 cơ sở dữ liệu riêng biệt theo chức năng để tối ưu hóa hiệu năng đọc/ghi và khả năng mở rộng theo chiều ngang (Horizontal Scaling).</p>
+                        
+                        <h4 style="color: var(--accent-amber); margin-bottom: 8px;">4. Application & Presentation Layer</h4>
+                        <p style="font-size: 0.85rem;">Cung cấp RESTful API qua Python Falcon, kết hợp cùng Web User Interface (ReactJS) và Admin Panel (AngularJS).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Các thành phần Vi dịch vụ -->
+        <section id="microservices">
+            <h2>🧩 Chi Tiết Các Thành Phần Vi Dịch Vụ (Microservices)</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🖥️ myems-web</span>
+                        <span class="badge badge-green">ReactJS</span>
+                    </div>
+                    <p>Giao diện người dùng chính dành cho nhân viên vận hành và quản lý. Hiển thị báo cáo năng lượng, biểu đồ thời gian thực, dashboard lớn (Large Screen), phân tích chi phí và lượng phát thải CO2.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⚙️ myems-admin</span>
+                        <span class="badge badge-amber">AngularJS</span>
+                    </div>
+                    <p>Giao diện quản trị hệ thống. Cho phép cấu hình sơ đồ cây không gian (Spaces), quản lý thiết bị (Equipments), đồng hồ (Meters), điểm đo (Points), quy tắc FDD và phân quyền người dùng.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🔌 myems-api</span>
+                        <span class="badge badge-blue">Python + Falcon</span>
+                    </div>
+                    <p>Dịch vụ RESTful API hiệu năng cao chạy trên khung làm việc Falcon (gunicorn/waitress). Đóng vai trò là cầu nối giữa các cơ sở dữ liệu và hai giao diện web người dùng/quản trị.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📡 Services Thu Thập Dữ Liệu</span>
+                        <span class="badge badge-purple">IoT Acquisition</span>
+                    </div>
+                    <p>Bao gồm <code>myems-modbus-tcp</code>, <code>myems-bacnet</code>, <code>myems-s7</code>. Tự động đọc dữ liệu định kỳ từ thiết bị ngoại vi và ghi trực tiếp vào cơ sở dữ liệu lịch sử <code>myems_historical_db</code>.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🧹 myems-cleaning</span>
+                        <span class="badge badge-green">Data Cleaning</span>
+                    </div>
+                    <p>Dịch vụ làm sạch dữ liệu. Kiểm tra các giá trị bất thường, giá trị bị thiếu (missing/bad data), loại bỏ nhiễu và đánh cờ chất lượng dữ liệu trước khi chuyển sang bước chuẩn hóa.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📐 myems-normalization & myems-aggregation</span>
+                        <span class="badge badge-blue">Data Engine</span>
+                    </div>
+                    <p><strong>Normalization</strong>: Chuyển đổi dữ liệu thô thành chỉ số tiêu thụ theo từng giờ.<br><strong>Aggregation</strong>: Tổng hợp mức tiêu thụ, tính toán tiền điện theo biểu giá (Tariff), phát thải carbon (CO2) và phát hiện sự cố (FDD).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Kiến trúc 13 Database -->
+        <section id="databases">
+            <h2>🗄️ Kiến trúc 13 Cơ Sở Dữ Liệu Tách Biệt (Multi-Database)</h2>
+            <p>MyEMS sử dụng nguyên tắc <strong>Data Separation Architecture</strong> (tách biệt dữ liệu). Điều này giúp tránh tình trạng một database duy nhất bị phình to, đảm bảo hiệu năng tối ưu cho các truy vấn thời gian thực và lịch sử.</p>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên Cơ Sở Dữ Liệu</th>
+                            <th>Mục Đích Sử Dụng</th>
+                            <th>Quy Mô Dữ Liệu</th>
+                            <th>Bảng Nổi Bật</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>myems_system_db</code></td>
+                            <td>Lưu cấu hình hệ thống, thiết bị, đồng hồ, cây không gian, biểu giá, công ty</td>
+                            <td>Trung bình (~150+ bảng)</td>
+                            <td><code>tbl_meters</code>, <code>tbl_equipments</code>, <code>tbl_spaces</code>, <code>tbl_points</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_historical_db</code></td>
+                            <td>Lưu dữ liệu đo chuỗi thời gian thực (Analog, Digital, Energy, Text) & file upload</td>
+                            <td><strong style="color: #ef4444;">Rất lớn</strong></td>
+                            <td><code>tbl_analog_value</code>, <code>tbl_digital_value</code>, <code>tbl_energy_value</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_energy_db</code></td>
+                            <td>Lưu thống kê tiêu thụ năng lượng theo giờ/ngày/tháng/năm của meter & không gian</td>
+                            <td><strong style="color: #ef4444;">Rất lớn</strong></td>
+                            <td><code>tbl_meter_hourly</code>, <code>tbl_space_input_category_hourly</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_billing_db</code></td>
+                            <td>Lưu dữ liệu chi phí năng lượng đã quy đổi ra tiền (CNY/USD/VND) theo biểu giá</td>
+                            <td><strong style="color: #ef4444;">Rất lớn</strong></td>
+                            <td><code>tbl_meter_hourly</code>, <code>tbl_equipment_input_category_hourly</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_carbon_db</code></td>
+                            <td>Lưu dữ liệu lượng phát thải khí nhà kính (kgCO2e) tính theo hệ số phát thải</td>
+                            <td><strong style="color: #ef4444;">Rất lớn</strong></td>
+                            <td>Cấu trúc tương tự <code>myems_energy_db</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_fdd_db</code></td>
+                            <td>Lưu quy tắc chẩn đoán lỗi (Fault Detection & Diagnosis) và lịch sử cảnh báo</td>
+                            <td>Trung bình</td>
+                            <td><code>tbl_rules</code>, <code>tbl_web_messages</code>, <code>tbl_email_messages</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_user_db</code></td>
+                            <td>Lưu thông tin người dùng, mật khẩu mã hóa, phiên làm việc (Session), API Keys, Audit Logs</td>
+                            <td>Nhỏ</td>
+                            <td><code>tbl_users</code>, <code>tbl_privileges</code>, <code>tbl_api_keys</code>, <code>tbl_logs</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_energy_baseline_db</code></td>
+                            <td>Dữ liệu đường cơ sở năng lượng phục vụ phân tích tiết kiệm năng lượng</td>
+                            <td>Trung bình</td>
+                            <td>Bảng baseline theo giờ của các đối tượng</td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_energy_model_db</code></td>
+                            <td>Mô hình tiêu thụ năng lượng 8760 giờ trong năm (8760 hours model)</td>
+                            <td>Trung bình</td>
+                            <td><code>tbl_meter_8760</code>, <code>tbl_space_input_category_8760</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_energy_plan_db</code></td>
+                            <td>Lưu kế hoạch và mục tiêu tiêu thụ năng lượng đặt ra</td>
+                            <td>Trung bình</td>
+                            <td>Bảng kế hoạch tiêu thụ theo đối tượng</td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_energy_prediction_db</code></td>
+                            <td>Dữ liệu dự báo tiêu thụ năng lượng từ các thuật toán ML/AI</td>
+                            <td>Trung bình</td>
+                            <td>Bảng dự báo tiêu thụ</td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_reporting_db</code></td>
+                            <td>Cấu hình và lưu trữ báo cáo nâng cao (Advanced Reports: Excel, PDF, Word)</td>
+                            <td>Nhỏ</td>
+                            <td><code>tbl_reports</code>, <code>tbl_reports_files</code>, <code>tbl_template_files</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>myems_production_db</code></td>
+                            <td>Dữ liệu sản lượng sản xuất (sản phẩm, ca làm việc, xưởng) để tính chỉ số suất tiêu hao</td>
+                            <td>Nhỏ</td>
+                            <td><code>tbl_products</code>, <code>tbl_shifts</code>, <code>tbl_shopfloor_hourly</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 5: Luồng dữ liệu -->
+        <section id="luong-du-lieu">
+            <h2>🔄 Quy Trình Luồng Dữ Liệu (Data Flow)</h2>
+            
+            <div class="flow-container">
+                <h3 style="margin-top: 0;">1. Luồng Thu Thập & Xử Lý Dữ Liệu (Data Pipeline)</h3>
+                
+                <div class="flow-step">
+                    <div style="font-weight: 700; color: var(--accent-amber);">Bước 1</div>
+                    <div><strong>IoT Edge / Smart Meters:</strong> Đồng hồ thông minh, cảm biến gửi tín hiệu điện/nước/gas qua công nghiệp.</div>
+                </div>
+                <div class="flow-arrow">&darr; Modbus TCP / BACnet / Siemens S7 / MQTT</div>
+                
+                <div class="flow-step">
+                    <div style="font-weight: 700; color: var(--accent-cyan);">Bước 2</div>
+                    <div><strong>Acquisition Services (myems-modbus-tcp...):</strong> Đọc dữ liệu điểm đo (Points) và ghi vào <code>myems_historical_db</code> (các bảng <code>tbl_analog_value</code>, <code>tbl_digital_value</code>).</div>
+                </div>
+                <div class="flow-arrow">&darr; Raw Data</div>
+
+                <div class="flow-step">
+                    <div style="font-weight: 700; color: var(--accent-green-light);">Bước 3</div>
+                    <div><strong>myems-cleaning:</strong> Lọc dữ liệu lỗi, phát hiện bất thường, đánh cờ <code>is_bad</code> và điền bù dữ liệu bị thiếu.</div>
+                </div>
+                <div class="flow-arrow">&darr; Cleaned Data</div>
+
+                <div class="flow-step">
+                    <div style="font-weight: 700; color: var(--accent-blue);">Bước 4</div>
+                    <div><strong>myems-normalization:</strong> Tính toán tích lũy chênh lệch điểm đo để ra lượng tiêu thụ theo giờ của Meter, ghi vào <code>myems_energy_db.tbl_meter_hourly</code>.</div>
+                </div>
+                <div class="flow-arrow">&darr; Hourly Energy Data</div>
+
+                <div class="flow-step">
+                    <div style="font-weight: 700; color: var(--accent-purple);">Bước 5</div>
+                    <div><strong>myems-aggregation:</strong> Tổng hợp dữ liệu lên cấp Không gian (Space), Thiết bị (Equipment), Cửa hàng (Store), Bên thuê (Tenant). Tính toán tiền theo Biểu giá (Tariff) vào <code>myems_billing_db</code>, tính lượng CO2 vào <code>myems_carbon_db</code> và chạy quy tắc cảnh báo FDD vào <code>myems_fdd_db</code>.</div>
+                </div>
+            </div>
+
+            <div class="flow-container">
+                <h3 style="margin-top: 0;">2. Luồng Truy Vấn & Hiển Thị Dữ Liệu (Data Query Flow)</h3>
+                <p style="font-size: 0.9rem;">Trình duyệt người dùng (Web UI) &rarr; Gửi REST HTTP Request tới <code>myems-api</code> (Port 8000) &rarr; API kiểm tra xác thực người dùng từ <code>myems_user_db</code> &rarr; API đọc cấu hình từ <code>myems_system_db</code> & truy vấn số liệu từ <code>myems_energy_db</code> / <code>myems_billing_db</code> / <code>myems_carbon_db</code> &rarr; Trả kết quả JSON cho Frontend vẽ đồ thị.</p>
+            </div>
+        </section>
+
+        <!-- Section 6: Cấu hình mặc định -->
+        <section id="cau-hinh">
+            <h2>🔑 Cấu Hình Mặc Định (Default Ports & Credentials)</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🌐 Số Cổng Dịch Vụ (Default Ports)</span>
+                    </div>
+                    <ul style="list-style: none; line-height: 2;">
+                        <li>🔹 <strong>MyEMS Web UI:</strong> <code>Cổng 80</code></li>
+                        <li>🔹 <strong>MyEMS API Service:</strong> <code>Cổng 8000</code></li>
+                        <li>🔹 <strong>MyEMS Admin UI:</strong> <code>Cổng 8001</code></li>
+                        <li>🔹 <strong>MySQL / MariaDB:</strong> <code>Cổng 3306</code></li>
+                    </ul>
+                </div>
+
+                <div class="credentials-box">
+                    <h4 style="color: #fbbf24; margin-bottom: 12px; font-size: 1.1rem;">🔐 Tài Khoản Đăng Nhập Mặc Định</h4>
+                    <p style="color: #f1f5f9; margin-bottom: 8px;">Áp dụng cho cả Giao diện <strong>Admin UI</strong> (Port 8001) và <strong>Web UI</strong> (Port 80):</p>
+                    <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">
+                        Tên đăng nhập (Username): <strong style="color: #34d399;">administrator</strong><br>
+                        Mật khẩu (Password): <strong style="color: #f43f5e;">!MyEMS1</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Triển khai & Cài đặt -->
+        <section id="trien-khai">
+            <h2>🚀 Hướng Dẫn Triển Khai & Cài Đặt</h2>
+            
+            <h3>1. Chạy Thử Nhanh myems-api Trên Windows (Development)</h3>
+            <pre><code># 1. Cài đặt Python 3.10 / 3.11 / 3.12
+# 2. Cài đặt các thư viện phụ thuộc:
+cd myems/myems-api
+pip install -r requirements.txt
+pip install waitress
+
+# 3. Khởi chạy API server với Waitress trên cổng 8000:
+waitress-serve --listen=0.0.0.0:8000 app:api</code></pre>
+
+            <h3>2. Chạy Giao Diện myems-web Trong Môi Trường Phát Triển</h3>
+            <pre><code># Cài đặt các package Node.js
+cd myems/myems-web
+npm install
+
+# Khởi chạy server phát triển local tại http://localhost:3000
+npm start
+
+# Đóng gói sản phẩm sản xuất (Production Build)
+npm run build</code></pre>
+
+            <h3>3. Triển Khai Sản Xuất Khuyên Dùng (Docker / Linux Server)</h3>
+            <p>Trong môi trường sản xuất chính thức, khuyên dùng Docker Compose hoặc triển khai Linux (Ubuntu/Debian) với Nginx làm Reverse Proxy, Gunicorn chạy myems-api và systemd daemonize các background microservices.</p>
+        </section>
+
+        <!-- Section 8: Phân biệt phiên bản -->
+        <section id="phien-ban">
+            <h2>⚡ So Sánh Phiên Bản Community vs Enterprise</h2>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tính Năng / Phân Đoạn</th>
+                            <th>Phiên Bản Cộng Đồng (Community)</th>
+                            <th>Phiên Bản Doanh Nghiệp (Enterprise)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Mã nguồn & Giấy phép</strong></td>
+                            <td>Mã nguồn mở 100% vĩnh viễn (Open Source)</td>
+                            <td>Phiên bản thương mại có hỗ trợ tùy chỉnh</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Năng lượng Cơ bản</strong></td>
+                            <td>Điện, Nước, Khí nén, Gas, Nóng, Lạnh</td>
+                            <td>Bao gồm tất cả tính năng Community</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Báo cáo & Phân tích</strong></td>
+                            <td>Báo cáo tiêu thụ, biểu giá, lượng phát thải CO2</td>
+                            <td>Báo cáo AI nâng cao, dự báo phụ tải chuyên sâu</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Năng lượng Tái tạo</strong></td>
+                            <td>Cấu hình cơ bản</td>
+                            <td>Tối ưu Quang điện (PV), Lưu trữ (ESS), Trạm sạc EV, Microgrid, VPP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Điều khiển & Chẩn đoán</strong></td>
+                            <td>Cảnh báo FDD quy tắc cơ bản</td>
+                            <td>Điều khiển khép kín thiết bị (Closed-loop control), Quản lý lệnh công tác (Work Orders)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            MyEMS Open Source Energy Management System &bull; Tài liệu tổng quan hệ thống được tạo tự động &bull; 2026
+        </footer>
+
+    </main>
+
+    <script>
+        // Smooth scroll & Active link highlight
+        document.querySelectorAll('.nav-item a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

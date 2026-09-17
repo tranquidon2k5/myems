@@ -57,3 +57,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Data files
+data/
+
+
